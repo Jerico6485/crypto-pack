@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crypto Forex Trader</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="dark">
+    <div class="container">
+        <header>
+            <h1>Crypto Forex Trader</h1>
+            <div class="user-settings">
+                <label for="whatsapp-number">WhatsApp:</label>
+                <input type="text" id="whatsapp-number" value="55 3195747126" placeholder="Seu número WhatsApp">
+                <button id="save-settings">Salvar</button>
+                <button id="open-settings-modal">Configurações</button>
+            </div>
+        </header>
+
+        <div class="main-content">
+            <div class="sidebar">
+                <div class="market-selector">
+                    <h3>Mercados</h3>
+                    <div class="market-types">
+                        <button class="market-type active" data-type="crypto">Criptomoedas</button>
+                        <button class="market-type" data-type="forex">Forex</button>
+                    </div>
+                    <div class="market-list" id="market-list">
+                        <!-- Lista de mercados será preenchida via JavaScript -->
+                    </div>
+                </div>
+                
+                <div class="indicators">
+                    <h3>Indicadores</h3>
+                    <div class="indicator-settings">
+                        <div class="indicator">
+                            <input type="checkbox" id="rsi-indicator" checked>
+                            <label for="rsi-indicator">RSI</label>
+                            <div class="indicator-params">
+                                <label for="rsi-period">Período:</label>
+                                <input type="number" id="rsi-period" value="14" min="1" max="50">
+                                <label for="rsi-overbought">Sobrecomprado:</label>
+                                <input type="number" id="rsi-overbought" value="70" min="50" max="90">
+                                <label for="rsi-oversold">Sobrevendido:</label>
+                                <input type="number" id="rsi-oversold" value="30" min="10" max="50">
+                            </div>
+                        </div>
+                        <div class="indicator">
+                            <input type="checkbox" id="ma-indicator">
+                            <label for="ma-indicator">Médias Móveis</label>
+                            <div class="indicator-params">
+                                <label for="ma-fast">Rápida:</label>
+                                <input type="number" id="ma-fast" value="9" min="1" max="50">
+                                <label for="ma-slow">Lenta:</label>
+                                <input type="number" id="ma-slow" value="21" min="1" max="100">
+                            </div>
+                        </div>
+                        <div class="indicator">
+                            <input type="checkbox" id="bb-indicator">
+                            <label for="bb-indicator">Bandas de Bollinger</label>
+                            <div class="indicator-params">
+                                <label for="bb-period">Período:</label>
+                                <input type="number" id="bb-period" value="20" min="1" max="50">
+                                <label for="bb-deviation">Desvio:</label>
+                                <input type="number" id="bb-deviation" value="2" min="1" max="5" step="0.5">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="trading-rules">
+                    <h3>Regras de Trading</h3>
+                    <div class="rule">
+                        <h4>Entrada (Compra)</h4>
+                        <div class="rule-condition">
+                            <select id="entry-condition">
+                                <option value="rsi-below">RSI abaixo de</option>
+                                <option value="ma-cross-up">Cruzamento MA para cima</option>
+                                <option value="bb-lower">Preço toca BB inferior</option>
+                            </select>
+                            <input type="number" id="entry-value" value="30" min="0" max="100">
+                        </div>
+                    </div>
+                    <div class="rule">
+                        <h4>Saída (Venda)</h4>
+                        <div class="rule-condition">
+                            <select id="exit-condition">
+                                <option value="rsi-above">RSI acima de</option>
+                                <option value="ma-cross-down">Cruzamento MA para baixo</option>
+                                <option value="bb-upper">Preço toca BB superior</option>
+                            </select>
+                            <input type="number" id="exit-value" value="70" min="0" max="100">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="notification-settings">
+                    <h3>Notificações</h3>
+                    <div class="notification-option">
+                        <input type="checkbox" id="notify-entry" checked>
+                        <label for="notify-entry">Alertar entradas</label>
+                    </div>
+                    <div class="notification-option">
+                        <input type="checkbox" id="notify-exit" checked>
+                        <label for="notify-exit">Alertar saídas</label>
+                    </div>
+                    <div class="notification-option">
+                        <input type="checkbox" id="notify-news">
+                        <label for="notify-news">Alertar notícias importantes</label>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="chart-container">
+                <div class="chart-header">
+                    <div class="symbol-info">
+                        <h2 id="current-symbol">Carregando...</h2>
+                        <span id="current-price">--</span>
+                        <span id="price-change">--</span>
+                    </div>
+                    <div class="timeframe-selector">
+                        <button class="timeframe" data-minutes="1">1m</button>
+                        <button class="timeframe" data-minutes="5">5m</button>
+                        <button class="timeframe active" data-minutes="15">15m</button>
+                        <button class="timeframe" data-minutes="30">30m</button>
+                        <button class="timeframe" data-minutes="60">1h</button>
+                        <button class="timeframe" data-minutes="240">4h</button>
+                        <button class="timeframe" data-minutes="1440">1d</button>
+                    </div>
+                </div>
+                <div id="chart"></div>
+                <div class="chart-indicators">
+                    <div id="rsi-chart" class="indicator-chart"></div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="alerts-panel">
+            <h3>Alertas e Sinais</h3>
+            <div id="alerts-list" class="alerts-list">
+                <!-- Alertas serão adicionados via JavaScript -->
+            </div>
+        </div>
+        
+        <div class="news-panel">
+            <h3>Notícias Recentes</h3>
+            <div id="news-list" class="news-list">
+                <!-- Notícias serão adicionadas via JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Configurações -->
+    <div id="settings-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Configurações</h2>
+                <button id="close-settings-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="settings-section">
+                    <h3>Notificações WhatsApp</h3>
+                    <div class="settings-field">
+                        <label for="settings-whatsapp-number">Número WhatsApp:</label>
+                        <input type="text" id="settings-whatsapp-number" placeholder="Ex: 55 31 95747126">
+                    </div>
+                    <div class="settings-field">
+                        <input type="checkbox" id="settings-notify-entry">
+                        <label for="settings-notify-entry">Notificar sinais de entrada</label>
+                    </div>
+                    <div class="settings-field">
+                        <input type="checkbox" id="settings-notify-exit">
+                        <label for="settings-notify-exit">Notificar sinais de saída</label>
+                    </div>
+                    <div class="settings-field">
+                        <input type="checkbox" id="settings-notify-news">
+                        <label for="settings-notify-news">Notificar notícias importantes</label>
+                    </div>
+                </div>
+                
+                <div class="settings-section">
+                    <h3>Indicadores Técnicos</h3>
+                    <div class="settings-field">
+                        <input type="checkbox" id="settings-rsi-enabled">
+                        <label for="settings-rsi-enabled">RSI</label>
+                    </div>
+                    <div class="settings-field settings-nested">
+                        <label for="settings-rsi-period">Período:</label>
+                        <input type="number" id="settings-rsi-period" min="1" max="50">
+                    </div>
+                    <div class="settings-field settings-nested">
+                        <label for="settings-rsi-overbought">Sobrecomprado:</label>
+                        <input type="number" id="settings-rsi-overbought" min="50" max="90">
+                    </div>
+                    <div class="settings-field settings-nested">
+                        <label for="settings-rsi-oversold">Sobrevendido:</label>
+                        <input type="number" id="settings-rsi-oversold" min="10" max="50">
+                    </div>
+                </div>
+                
+                <div class="settings-section">
+                    <h3>Regras de Trading</h3>
+                    <div class="settings-field">
+                        <label for="settings-entry-condition">Condição de Entrada:</label>
+                        <select id="settings-entry-condition">
+                            <option value="rsi-below">RSI abaixo de</option>
+                            <option value="ma-cross-up">Cruzamento MA para cima</option>
+                            <option value="bb-lower">Preço toca BB inferior</option>
+                            <option value="macd-cross-up">MACD cruza para cima</option>
+                        </select>
+                        <input type="number" id="settings-entry-value" min="0" max="100">
+                    </div>
+                    <div class="settings-field">
+                        <label for="settings-exit-condition">Condição de Saída:</label>
+                        <select id="settings-exit-condition">
+                            <option value="rsi-above">RSI acima de</option>
+                            <option value="ma-cross-down">Cruzamento MA para baixo</option>
+                            <option value="bb-upper">Preço toca BB superior</option>
+                            <option value="macd-cross-down">MACD cruza para baixo</option>
+                        </select>
+                        <input type="number" id="settings-exit-value" min="0" max="100">
+                    </div>
+                    
+                    <div class="settings-field">
+                        <input type="checkbox" id="settings-stop-loss-enabled">
+                        <label for="settings-stop-loss-enabled">Stop Loss</label>
+                    </div>
+                    <div class="settings-field settings-nested">
+                        <label for="settings-stop-loss-type">Tipo:</label>
+                        <select id="settings-stop-loss-type">
+                            <option value="percent">Percentual</option>
+                            <option value="fixed">Fixo</option>
+                            <option value="atr">ATR</option>
+                        </select>
+                    </div>
+                    <div class="settings-field settings-nested">
+                        <label for="settings-stop-loss-value">Valor:</label>
+                        <input type="number" id="settings-stop-loss-value" min="0.1" step="0.1">
+                    </div>
+                    
+                    <div class="settings-field">
+                        <input type="checkbox" id="settings-take-profit-enabled">
+                        <label for="settings-take-profit-enabled">Take Profit</label>
+                    </div>
+                    <div class="settings-field settings-nested">
+                        <label for="settings-take-profit-type">Tipo:</label>
+                        <select id="settings-take-profit-type">
+                            <option value="percent">Percentual</option>
+                            <option value="fixed">Fixo</option>
+                            <option value="risk-reward">Risco/Recompensa</option>
+                        </select>
+                    </div>
+                    <div class="settings-field settings-nested">
+                        <label for="settings-take-profit-value">Valor:</label>
+                        <input type="number" id="settings-take-profit-value" min="0.1" step="0.1">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="reset-settings">Resetar</button>
+                <button id="save-settings-form">Salvar</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/luxon@2.0.2/build/global/luxon.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-luxon@1.0.0/dist/chartjs-adapter-luxon.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-chart-financial@0.1.1/dist/chartjs-chart-financial.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@1.0.2/dist/chartjs-plugin-annotation.min.js"></script>
+    <script src="yahoo-finance.js"></script>
+    <script src="technical-indicators.js"></script>
+    <script src="trading-rules.js"></script>
+    <script src="whatsapp-notifications.js"></script>
+    <script src="settings-manager.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
